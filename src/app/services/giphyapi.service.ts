@@ -1,22 +1,38 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { catchError, map } from 'rxjs/operators';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { DataResponse } from '../models/data-response.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GiphyapiService {
-  private api = 'http://api.giphy.com/v1/gifs/';
+  private api = 'https://api.giphy.com/v1/gifs';
 
-  constructor(private http: HttpClient) {}
+  private httpOptions = {};
+  constructor(private http: HttpClient) {
+    let params = new HttpParams();
+    params = params.append('api_key', environment.API_KEY);
+    params = params.append('limit', '25');
+    params = params.append('rating', 'G');
+
+    this.httpOptions = {
+      params: params
+    };
+  }
 
   getTrending(): Observable<DataResponse> {
-    return this.http.get<DataResponse>(this.api + '/trending').pipe(
-      map(data => data),
-      catchError(this.handleError<DataResponse>('getHeroes'))
-    );
+    return this.http
+      .get<DataResponse>(this.api + '/trending', this.httpOptions)
+      .pipe(catchError(this.handleError<DataResponse>('getTrending')));
+  }
+
+  getByid(id: string) {
+    return this.http
+      .get<DataResponse>(this.api + '/' + id, this.httpOptions)
+      .pipe(catchError(this.handleError<DataResponse>('getByid')));
   }
 
   /**
@@ -38,9 +54,9 @@ export class GiphyapiService {
     };
   }
 
-  /** Log a HeroService message with the MessageService */
+  /** Log a message with the MessageService */
   private log(message: string) {
-    // this.messageService.add(`HeroService: ${message}`);
+    // this.messageService.add(`GiphyapiService: ${message}`);
     console.error(message);
   }
 }
