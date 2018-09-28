@@ -11,28 +11,34 @@ import { environment } from '../../environments/environment';
 export class GiphyapiService {
   private api = 'https://api.giphy.com/v1/gifs';
 
-  private httpOptions = {};
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {}
+
+  private setParams(): HttpParams {
     let params = new HttpParams();
     params = params.append('api_key', environment.API_KEY);
     params = params.append('limit', '25');
     params = params.append('rating', 'G');
 
-    this.httpOptions = {
-      params: params
-    };
+    return params;
   }
 
   getTrending(): Observable<DataResponse> {
     return this.http
-      .get<DataResponse>(this.api + '/trending', this.httpOptions)
+      .get<DataResponse>(this.api + '/trending', { params: this.setParams() })
       .pipe(catchError(this.handleError<DataResponse>('getTrending')));
   }
 
   getByid(id: string) {
     return this.http
-      .get<DataResponse>(this.api + '/' + id, this.httpOptions)
+      .get<DataResponse>(this.api + '/' + id, { params: this.setParams() })
       .pipe(catchError(this.handleError<DataResponse>('getByid')));
+  }
+
+  search(text: string) {
+    const params = this.setParams().append('q', text);
+    return this.http
+      .get<DataResponse>(this.api + '/search', { params: params })
+      .pipe(catchError(this.handleError<DataResponse>('search')));
   }
 
   /**

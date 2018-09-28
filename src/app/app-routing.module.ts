@@ -4,6 +4,7 @@ import { GiphyHomeComponent } from './giphy-home/giphy-home.component';
 
 const routes: Routes = [
   { path: 'home', component: GiphyHomeComponent },
+  { path: 'detail/:id', component: GiphyHomeComponent },
   { path: '**', redirectTo: '/home' }
 ];
 

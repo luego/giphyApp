@@ -33,6 +33,17 @@ export class GiphyHomeComponent implements OnInit {
   }
 
   doSearch(text: string) {
-    console.log(text);
+    if (text === '') {
+      this.loadMore();
+    } else {
+      this.gifts$ = this.http.search(text).pipe(
+        map(res => {
+          this.count = res.pagination.count;
+          this.total = res.pagination.total_count;
+          this.offset = res.pagination.offset;
+          return res.data;
+        })
+      );
+    }
   }
 }
