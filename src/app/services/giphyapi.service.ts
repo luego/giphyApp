@@ -22,9 +22,10 @@ export class GiphyapiService {
     return params;
   }
 
-  getTrending(): Observable<DataResponse> {
+  getTrending(offset: number): Observable<DataResponse> {
+    const params = this.setParams().append('offset', offset.toString());
     return this.http
-      .get<DataResponse>(this.api + '/trending', { params: this.setParams() })
+      .get<DataResponse>(this.api + '/trending', { params: params })
       .pipe(catchError(this.handleError<DataResponse>('getTrending')));
   }
 

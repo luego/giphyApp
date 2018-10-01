@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GiphyapiService } from '../services/giphyapi.service';
-import { Datum } from '../models/data-response.model';
+import { Datum, DataResponse } from '../models/data-response.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -14,36 +14,48 @@ export class GiphyHomeComponent implements OnInit {
   gifts$: Observable<Datum[]>;
   count: number;
   offset: number;
+  more: number;
+  page: number;
+  gifts: Datum[];
 
-  constructor(private http: GiphyapiService) {}
-
-  ngOnInit() {
-    this.loadMore();
+  constructor(private http: GiphyapiService) {
+    this.more = 0;
+    this.page = 0;
+    this.gifts = [];
   }
 
-  loadMore() {
-    this.gifts$ = this.http.getTrending().pipe(
-      map(res => {
-        this.count = res.pagination.count;
-        this.total = res.pagination.total_count;
-        this.offset = res.pagination.offset;
-        return res.data;
-      })
-    );
+  ngOnInit() {
+    this.loadMore(this.more);
+  }
+
+  loadMore(more: number) {
+    this.http
+      .getTrending(more)
+      .pipe(map(res => this.mapResults(res)))
+      .subscribe(x => {
+        this.gifts.push(...x);
+      });
   }
 
   doSearch(text: string) {
     if (text === '') {
-      this.loadMore();
+      this.loadMore(0);
     } else {
-      this.gifts$ = this.http.search(text).pipe(
-        map(res => {
-          this.count = res.pagination.count;
-          this.total = res.pagination.total_count;
-          this.offset = res.pagination.offset;
-          return res.data;
-        })
-      );
+      this.gifts$ = this.http
+        .search(text)
+        .pipe(map(res => this.mapResults(res)));
     }
+  }
+
+  mapResults(res: DataResponse) {
+    this.count = res.pagination.count;
+    this.total = res.pagination.total_count;
+    this.offset = res.pagination.offset;
+    return res.data;
+  }
+
+  doLoadMore() {
+    this.more += 25;
+    this.loadMore(this.more);
   }
 }
