@@ -11,7 +11,12 @@ import { GiphySearchComponent } from './giphy-search/giphy-search.component';
 import { GiphyDetailComponent } from './giphy-detail/giphy-detail.component';
 
 @NgModule({
-  declarations: [AppComponent, GiphyHomeComponent, GiphySearchComponent, GiphyDetailComponent],
+  declarations: [
+    AppComponent,
+    GiphyHomeComponent,
+    GiphySearchComponent,
+    GiphyDetailComponent
+  ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, UiModule],
   providers: [GiphyapiService],
   bootstrap: [AppComponent]

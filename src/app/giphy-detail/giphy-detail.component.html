@@ -1,3 +1,47 @@
-<p>
-  giphy-detail works!
-</p>
+<button class="btn" type="button" (click)="goBack()">Go Back</button>
+<hr />
+<div *ngIf="gif" class="row">
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+    <img class="img-fluid" [src]="gif.images.original.webp" alt="Not found">
+  </div>
+  <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-center">
+    <img class="rounded img-thumbnail" [src]="gif.user?.avatar_url" alt="Not found" height="170" width="170">
+    <table class="table text-left">
+      <tbody>
+        <tr>
+          <th>Avatar
+          </th>
+          <td></td>
+        </tr>
+        <tr>
+          <th>
+            Url
+          </th>
+          <td><a href="{{gif.url}}" target="_blank">{{gif.url}}</a> </td>
+        </tr>
+        <tr>
+          <th>
+            Username
+          </th>
+          <td>{{gif.user?.username}}</td>
+        </tr>
+        <tr>
+          <th>
+            display Name
+          </th>
+          <td>{{gif.user?.display_name}}</td>
+        </tr>
+        <tr>
+          <th>Display Name
+          </th>
+          <td>{{gif.user?.display_name}}</td>
+        </tr>
+        <tr>
+          <th>Profile
+          </th>
+          <td><a href="{{gif.user?.profile_url}}" target="_blanck">View</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

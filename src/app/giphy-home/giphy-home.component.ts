@@ -47,7 +47,7 @@ export class GiphyHomeComponent implements OnInit {
     }
   }
 
-  mapResults(res: DataResponse) {
+  mapResults(res: DataResponse<Datum[]>) {
     this.count = res.pagination.count;
     this.total = res.pagination.total_count;
     this.offset = res.pagination.offset;

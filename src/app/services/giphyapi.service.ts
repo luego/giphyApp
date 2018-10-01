@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { DataResponse } from '../models/data-response.model';
+import { DataResponse, Datum } from '../models/data-response.model';
 import { environment } from '../../environments/environment';
+import { MessageService } from './message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,10 @@ import { environment } from '../../environments/environment';
 export class GiphyapiService {
   private api = 'https://api.giphy.com/v1/gifs';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private messageService: MessageService
+  ) {}
 
   private setParams(): HttpParams {
     let params = new HttpParams();
@@ -22,24 +26,26 @@ export class GiphyapiService {
     return params;
   }
 
-  getTrending(offset: number): Observable<DataResponse> {
+  getTrending(offset: number): Observable<DataResponse<Datum[]>> {
     const params = this.setParams().append('offset', offset.toString());
     return this.http
-      .get<DataResponse>(this.api + '/trending', { params: params })
-      .pipe(catchError(this.handleError<DataResponse>('getTrending')));
+      .get<DataResponse<Datum[]>>(this.api + '/trending', { params: params })
+      .pipe(catchError(this.handleError<DataResponse<Datum[]>>('getTrending')));
   }
 
-  getByid(id: string) {
+  getByid(id: string): Observable<DataResponse<Datum>> {
     return this.http
-      .get<DataResponse>(this.api + '/' + id, { params: this.setParams() })
-      .pipe(catchError(this.handleError<DataResponse>('getByid')));
+      .get<DataResponse<Datum>>(this.api + '/' + id, {
+        params: this.setParams()
+      })
+      .pipe(catchError(this.handleError<DataResponse<Datum>>('getByid')));
   }
 
   search(text: string) {
     const params = this.setParams().append('q', text);
     return this.http
-      .get<DataResponse>(this.api + '/search', { params: params })
-      .pipe(catchError(this.handleError<DataResponse>('search')));
+      .get<DataResponse<Datum[]>>(this.api + '/search', { params: params })
+      .pipe(catchError(this.handleError<DataResponse<Datum[]>>('search')));
   }
 
   /**
@@ -63,7 +69,6 @@ export class GiphyapiService {
 
   /** Log a message with the MessageService */
   private log(message: string) {
-    // this.messageService.add(`GiphyapiService: ${message}`);
-    console.error(message);
+    this.messageService.add(`GiphyapiService: ${message}`);
   }
 }
